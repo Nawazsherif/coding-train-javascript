@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+    <title>Types of JS</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+        integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+        crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+        integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+        crossorigin=""></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+
+</head>
+
+<body>
+    <script>
+        if ('geolocation' in navigator) {
+            navigator.geolocation.getCurrentPosition(position => {
+                const lat = position.coords.latitude;
+                const long = position.coords.longitude;
+
+                document.getElementById('latitude').textContent = lat;
+                document.getElementById
+                    ('longtitude').textContent = long;
+
+                var mymap = L.map('mapid').setView([lat, long], 13);
+
+                //Tile is a must need property for maps to work. Add along with attribution and tileurl
+                L.tileLayer('https://c.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                    maxZoom: 14,
+                }).addTo(mymap);
+
+                //Marker can be a circle, polygon or by default location pointer
+                var marker = L.marker([lat, long]).addTo(mymap);
+
+                //Popup can be standalone as well.
+                marker.bindPopup("I am a popup").openPopup();
+
+            });
+        }
+        const x_values = [];
+        const y_values = [];
+        parseCsv();
+
+        async function parseCsv() {
+            const response = await fetch('diabetes.csv');
+            const data = await response.text();
+
+            const dataArray = data.split('\n').slice(1);
+
+            dataArray.forEach((row) => {
+                rowData = row.split(',');
+                const age = rowData[7];
+                const pregnancyPersons = rowData[0];
+
+                x_values.push(age);
+                y_values.push(pregnancyPersons);
+            })
+        }
+
+        console.log(x_values);
+        console.log(y_values);
+
+    </script>
+
+    <p><strong>latitude: </strong><span id="latitude"></span><br />
+        <strong>longtitude: </strong> <span id="longtitude"></span><br /></p>
+    <div id="mapid"></div>
+    <br />
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 col-md-10 offset-md-1">
+                <canvas id="myChart"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="node_modules/chart.js/dist/Chart.js"></script>
+    <script src="node_modules/national-geographic-api/dist/api/NationalGeographicAPI.js"></script>
+    <script>
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: x_values,
+                datasets: [{
+                    label: 'Age per pregnancy',
+                    data: y_values,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+        const natGeo =new NationalGeographicAPI();
+        natGeo.getPhotoOfDay(`DAY` , `CALLBACK`)
+            .then((result) => console.log(result));
+
+        const photo_of_the_day ='Nawaz.jpg';
+        const title = 'Nawaz Sherif';
+        const description = 'Is a good developer';
+        
+        document.getElementById('title').textContent = title;
+        document.getElementById('description').textContent = description;
+        document.getElementById('photo_of_the_day').textContent = photo_of_the_day;
+    </script>
+
+    <div class="container">
+        <div class="row">
+            <div class="card col-12 col-md-4 col-sm-6" style="width:400px">
+                <img class="card-img-top" src='Nawaz.jpg' alt="Card image">
+                <div class="card-body">
+                    <h4 class="card-title" id="title">Nawaz Sherif</h4>
+                    <p class="card-text" id="description">Is a good developer</p>
+                    <a href="#" class="btn btn-primary">See Profile</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
