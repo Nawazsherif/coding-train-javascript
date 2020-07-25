@@ -1,0 +1,17 @@
+{
+  "scripts": {
+    "start": "node sever.js",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "type": "module",
+  "name": "coding-train-javascript",
+  "version": "1.0.0",
+  "repository": "https://github.com/Nawazsherif/coding-train-javascript.git",
+  "author": "Nawazsherif <nawaz.sherifn@thoughtworks.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
